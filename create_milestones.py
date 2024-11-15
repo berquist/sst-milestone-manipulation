@@ -17,4 +17,9 @@ if __name__ == "__main__":
     for milestone_name in milestone_names:
         ret = sp.run(
             ["gh", "milestone", "create", "--title", milestone_name, "--repo", args.repo],
+            capture_output=True,
         )
+        stdout = ret.stdout.decode()
+        if ret.returncode and "The milestone with the same title already exists." not in stdout:
+            raise RuntimeError(stdout)
+        print(stdout)
